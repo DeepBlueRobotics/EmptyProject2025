@@ -6,15 +6,20 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import org.carlmontrobotics.lib199.MotorConfig;
 public class Drivetrain extends SubsystemBase {
-    private final SparkMax sexm = new SparkMax(0, MotorType.kBrushless);
-    private final RelativeEncoder enc = sexm.getEncoder();
-    private final SparkClosedLoopController pid = sexm.getClosedLoopController();
+
+    private final SparkMax leftMotor = new SparkMax(0, MotorType.kBrushless);
+    private final RelativeEncoder leftEncoder = leftMotor.getEncoder();
+
+    private final SparkMax rightMotor = new SparkMax(1, MotorType.kBrushless);
+    private final RelativeEncoder rightEncoder = rightMotor.getEncoder();
+
+    private final SparkClosedLoopController pid = leftMotor.getClosedLoopController();
     public Drivetrain(){
        
     }
-    public void driveMotor(double voltage) {
-        sexm.set(voltage);
+    public void driveMotor(double leftVoltage, double rightVoltage) {
+        leftMotor.set(leftVoltage);
+        rightMotor.set(-rightVoltage);
     }
 }

@@ -12,8 +12,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Drive extends Command {
   /** Creates a new drive. */
   private final Drivetrain drivetrain;
-  public Drive(Drivetrain drivetrain, double joyLeftY) {
+  private final double joyLeftY;
+  private final double joyRightY;
+  public Drive(Drivetrain drivetrain, DoubleSupplier joyLeftY, DoubleSupplier joyRightY) {
     this.drivetrain = drivetrain;
+    this.joyLeftY = joyLeftY.getAsDouble();
+    this.joyRightY = joyRightY.getAsDouble();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -26,7 +30,9 @@ public class Drive extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    drivetrain.driveMotor(joyLeftY, joyRightY);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -45,7 +45,7 @@ public class RobotContainer {
   }
   
   private void setDefaultCommands() {
-    drivetrain.setDefaultCommand(new Drive(drivetrain, () -> driverController.getRawAxis(0)));
+    drivetrain.setDefaultCommand(new Drive(drivetrain, () -> ProcessedAxisValue(driverController, Axis.kLeftY), () -> ProcessedAxisValue(driverController, Axis.kRightY)));
   }
   private void setBindingsDriver() {
   }
