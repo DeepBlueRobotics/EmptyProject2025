@@ -11,13 +11,14 @@ import static org.carlmontrobotics.Constants.OI;
 
 import org.carlmontrobotics.Constants.OI;
 import org.carlmontrobotics.Commands.Drive;
+import org.carlmontrobotics.Commands.driveArm;
 import org.carlmontrobotics.Subsystems.*;
 
 //controllers
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //commands
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -45,9 +46,21 @@ public class RobotContainer {
   }
   
   private void setDefaultCommands() {
-    drivetrain.setDefaultCommand(new Drive(drivetrain, () -> ProcessedAxisValue(driverController, Axis.kLeftY), () -> ProcessedAxisValue(driverController, Axis.kRightY)));
+    // drivetrain.setDefaultCommand(
+    //   new Drive(drivetrain,
+    //   // public int add(x, y) {return 78989;}
+    //   () -> {
+    //     SmartDashboard.putNumber("joyLeftY-robotcontainer", ProcessedAxisValue(driverController, Axis.kLeftY));
+    //    return ProcessedAxisValue(driverController, Axis.kLeftY);
+    //   },
+    //   () -> {SmartDashboard.putNumber("joyLeftY-robotcontainer", ProcessedAxisValue(driverController, Axis.kRightY));
+    //    return ProcessedAxisValue(driverController, Axis.kRightY);}
+    //     ));
   }
   private void setBindingsDriver() {
+    new JoystickButton(driverController, XboxController.Button.kX.value).onTrue(new driveArm());
+
+
   }
   private void setBindingsManipulator() {}
 
