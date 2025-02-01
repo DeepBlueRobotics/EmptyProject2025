@@ -9,6 +9,9 @@ package org.carlmontrobotics;
 // import org.carlmontrobotics.commands.*;
 import static org.carlmontrobotics.Constants.OI;
 
+import org.carlmontrobotics.Commands.drive;
+import org.carlmontrobotics.Subsystems.Drivetrain;
+
 //controllers
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -31,7 +34,7 @@ public class RobotContainer {
   //2. Use absolute paths from constants to reduce confusion
   public final GenericHID driverController = new GenericHID(OI.Driver.port);
   public final GenericHID manipulatorController = new GenericHID(OI.Manipulator.port);
-
+  private final Drivetrain drivetrain = new Drivetrain();
   public RobotContainer() {
 
     setDefaultCommands();
@@ -40,15 +43,17 @@ public class RobotContainer {
   }
 
   private void setDefaultCommands() {
-    // drivetrain.setDefaultCommand(new TeleopDrive(
-    //   drivetrain,
-    //   () -> ProcessedAxisValue(driverController, Axis.kLeftY)),
-    //   () -> ProcessedAxisValue(driverController, Axis.kLeftX)),
-    //   () -> ProcessedAxisValue(driverController, Axis.kRightX)),
-    //   () -> driverController.getRawButton(OI.Driver.slowDriveButton)
-    // ));
+    drivetrain.setDefaultCommand(new drive(
+      drivetrain,
+      () -> ProcessedAxisValue(driverController, Axis.kLeftY),
+      () -> ProcessedAxisValue(driverController, Axis.kLeftX),
+      () -> ProcessedAxisValue(driverController, Axis.kRightX),
+      () -> driverController.getRawButton(OI.Driver.slowDriveButton)
+    ));
   }
-  private void setBindingsDriver() {}
+  private void setBindingsDriver() {
+    
+  }
   private void setBindingsManipulator() {}
 
   public Command getAutonomousCommand() {
