@@ -4,6 +4,11 @@
 
 package org.carlmontrobotics;
 
+import com.playingwithfusion.TimeOfFlight;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,14 +23,24 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  public static DigitalInput limitSwitch = new DigitalInput(0);
+  public static SparkFlex motor = new SparkFlex(1, MotorType.kBrushless);
+  public static TimeOfFlight distanceSensor = new TimeOfFlight(2);
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    if (limitSwitch.get()){
+      motor.set(1);
+    }
+    else{
+      motor.set(0);
+    }
   }
 
   @Override
