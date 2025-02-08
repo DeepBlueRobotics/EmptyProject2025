@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    if (limitSwitch.get()){
+    if (limitSwitch.get() && distanceSensor.getRange() == 80.0){
       motor.set(1);
     }
     else{
