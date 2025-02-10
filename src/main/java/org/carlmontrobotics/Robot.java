@@ -5,11 +5,19 @@
 package org.carlmontrobotics;
 
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,23 +33,49 @@ public class Robot extends TimedRobot {
 
   public static DigitalInput limitSwitch = new DigitalInput(0);
   public static SparkFlex motor = new SparkFlex(1, MotorType.kBrushless);
-  public static TimeOfFlight distanceSensor = new TimeOfFlight(2);
+  public static TimeOfFlight distanceSensor = new TimeOfFlight(5);
+  public static boolean moveBack = false;
+  public static boolean intakeStarted = false;
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+    distanceSensor.setRangingMode(RangingMode.Short, 24);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    if (limitSwitch.get() && distanceSensor.getRange() == 80.0){
-      motor.set(1);
+    SmartDashboard.putNumber("Distance", 
+    distanceSensor.getRange());
+    SmartDashboard.getBoolean("Move Back", moveBack);
+    boolean isAnyValid = false;
+    int motorSpeed = 0;
+    SmartDashboard.putBoolean("Valid Distance Detected", isAnyValid);
+    SmartDashboard.putBoolean("limitSwitch", limitSwitch.get());
+    SmartDashboard.putNumber("motor speed", motorSpeed);
+    boolean dsSeesCoral = distanceSensor.getRange() < 100;
+    boolean lsSeesCoral = !limitSwitch.get();
+    double lowSpeed = 0.04;
+    double highSpeed = 0.2;
+    double negSpeed = -0.04;
+
+    if(dsSeesCoral){
+      intakeStarted = true;
     }
-    else{
-      motor.set(0);
+
+    if(dsSeesCoral && !lsSeesCoral){
+      if(!moveBack) motor.set(highSpeed);
+      else if (moveBack) motor.set(0);
+    }else if(dsSeesCoral && lsSeesCoral){
+      if(!moveBack) motor.set(lowSpeed);
+      else if (moveBack) motor.set(0);
+    }else if(!dsSeesCoral){
+      if(intakeStarted) {
+        moveBack = true;
+        motor.set(negSpeed);
+      }
     }
-  }
+}
 
   @Override
   public void autonomousInit() {
