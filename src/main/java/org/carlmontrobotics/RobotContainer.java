@@ -9,6 +9,8 @@ package org.carlmontrobotics;
 // import org.carlmontrobotics.commands.*;
 import static org.carlmontrobotics.Constants.OI;
 
+import org.carlmontrobotics.Constants.OI;
+
 //controllers
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -33,10 +35,11 @@ public class RobotContainer {
   public final GenericHID manipulatorController = new GenericHID(OI.Manipulator.port);
 
   public RobotContainer() {
+    new Motor();
 
-    setDefaultCommands();
-    setBindingsDriver();
-    setBindingsManipulator();
+    // setDefaultCommands();
+    // setBindingsDriver();
+    // setBindingsManipulator();
   }
 
   private void setDefaultCommands() {

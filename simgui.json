@@ -1,0 +1,13 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/goto setpoint": "Command",
+      "/SmartDashboard/update PID constants": "Command",
+      "/SmartDashboard/update spark port": "Command"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
