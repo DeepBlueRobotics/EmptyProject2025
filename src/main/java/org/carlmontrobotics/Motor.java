@@ -10,25 +10,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 public class Motor extends SubsystemBase {
 
-  private int port = 0;
+  private int port = 1;
   
-  public SparkMax spark;
+  public SparkFlex spark;
   public SparkClosedLoopController pidcon;
-  public SparkMaxConfig currConfig = new SparkMaxConfig();
+  public SparkFlexConfig currConfig = new SparkFlexConfig();
   private double[] pid = {0,0,0};
-  private boolean pidenabled = true;
-  private boolean ppide = true;//periodic pid?
+  private boolean pidenabled = false;
+  private boolean ppide = false;//periodic pid?
 
   public double goal = 0;
 
@@ -42,9 +44,13 @@ public class Motor extends SubsystemBase {
     currConfig.closedLoop
       .positionWrappingEnabled(true)
       .positionWrappingInputRange(0,360)
-      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-    setport(port);
-    //config() ^
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    this.spark = new SparkFlex(port, MotorType.kBrushless);
+    config();
+    // setport(port);
+
+    //config works :)
+    // spark.set(.2);
 
 
     //initla data
@@ -77,7 +83,7 @@ public class Motor extends SubsystemBase {
   }
 
   public Motor setport(int sparkmaxport){
-    this.spark = new SparkMax(sparkmaxport, MotorType.kBrushless);
+    this.spark = new SparkFlex(sparkmaxport, MotorType.kBrushless);
     this.pidcon = this.spark.getClosedLoopController(); 
     config(); return this;
   }
@@ -87,52 +93,65 @@ public class Motor extends SubsystemBase {
   }
 
   //goal pos, not encoder pos
-  public void setpos(double pos){
-    enablepid();
-    this.pidcon.setReference(pos, ControlType.kPosition);
-  }
-  public void set(double percentagePower){
-    this.spark.set(percentagePower);
-    disablepid();
-  }
+  // public void setpos(double pos){//DOES NOT WORK
+  //   enablepid();
+  //   this.pidcon.setReference(pos, ControlType.kPosition);
+  // }
+  // public void set(double percentagePower){
+  //   this.spark.set(percentagePower);
+  //   disablepid();
+  // }
   public double getpos(){
-    return this.spark.getAbsoluteEncoder().getPosition();
+    return this.spark.getEncoder().getPosition();
   }
 
   //for internal use to manually disable PID
-  public void disablepid(){
-    pid[0] = this.spark.configAccessor.closedLoop.getP();
-    pid[1] = this.spark.configAccessor.closedLoop.getI();
-    pid[2] = this.spark.configAccessor.closedLoop.getD();
-    setpid(0,0,0);
-    this.pidenabled=false;
-  }
-  public void enablepid(){
-    if (!pidenabled)
-      setpid(pid[0],pid[1],pid[2]);
-    this.pidenabled=true;
-  }
+  // public void disablepid(){
+  //   pid[0] = this.spark.configAccessor.closedLoop.getP();
+  //   pid[1] = this.spark.configAccessor.closedLoop.getI();
+  //   pid[2] = this.spark.configAccessor.closedLoop.getD();
+  //   setpid(0,0,0);
+  //   this.pidenabled=false;
+  // }
+  // public void enablepid(){
+  //   if (!pidenabled)
+  //     setpid(pid[0],pid[1],pid[2]);
+  //   this.pidenabled=true;
+  // }
 
   //for either mode
   public void gotogoal(){
-    if (pidenabled){
-      setpos(goal);
-    } else {
-      set(goal);
-    }
+    this.spark.set(goal);
+    // if (pidenabled){
+    //   // setpos(goal);
+    // } else {
+    //   // set(goal);
+    //   this.spark.set(goal);
+    // }
   }
 
   @Override
   public void periodic() {
-    if (ppide){
-      setpos(goal);
-    }
+    //this.spark.set(goal);
+    //  System.out.println("hi");
+    //^ works
+
+    // if (ppide){
+    //   setpos(goal);
+    // }
+
+    // gotogoal();
 
     pidenabled = SmartDashboard.getBoolean("pid enabled?", pidenabled);
     ppide = SmartDashboard.getBoolean("periodic PID?", ppide);
-    goal = SmartDashboard.getNumber("setpoint", goal);
+    goal = SmartDashboard.getNumber("setpoint", .4);
 
     SmartDashboard.putNumber("encoderPOS",getpos());
-    SmartDashboard.putNumber("encoderVEL",this.spark.getAbsoluteEncoder().getVelocity());
+
+    // SmartDashboard.putNumber("encoder", this.spark.getEncoder().getPosition());
+    // SmartDashboard.putNumber("absolute", this.spark.getAbsoluteEncoder().getPosition());
+    // absolute doesnt change :(
+
+    SmartDashboard.putNumber("encoderVEL",this.spark.getEncoder().getVelocity());
   }
 }
