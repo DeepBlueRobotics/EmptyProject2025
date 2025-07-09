@@ -34,7 +34,7 @@ public class RobotContainer {
   public final GenericHID driverController = new GenericHID(OI.Driver.port);
   public final GenericHID manipulatorController = new GenericHID(OI.Manipulator.port);
 
-  Motor motor = new Motor(); 
+  Drivetrain drivetrain = new Drivetrain(); 
 
   public RobotContainer() {
 

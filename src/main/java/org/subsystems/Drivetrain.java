@@ -13,7 +13,7 @@ private final XboxController controller;
 
 public newDrivertrain(XboxController controller) {
     rightmotor = MotorControllerFactory.createSparkMax(21, MotorType.kBrushless);
-    leftmotor = MotorControllerFactory.createSparkMax(22, MotorType.kBrushless);
+    leftmotor = MotorControllerFactory.createSparkMax(13, MotorType.kBrushless);
     this.controller = controller;
 }
 
