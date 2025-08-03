@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ExampleCommand extends Command {
   /** Creates a new ExampleCommand. */
-  private ExampleMotor exampleMotor
+  private ExampleMotor exampleMotor;
+  
   public ExampleCommand(ExampleMotor exampleMotor) {
-    addRequirements(this.exampleMotor = exampleMotor)
+    addRequirements(this.exampleMotor = exampleMotor);
   }
 
   // Called when the command is initially scheduled.
