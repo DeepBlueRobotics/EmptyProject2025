@@ -4,6 +4,13 @@
 
 package org.carlmontrobotics;
 
+import static org.mockito.ArgumentMatchers.notNull;
+
+import org.carlmontrobotics.lib199.MotorConfig;
+import org.carlmontrobotics.lib199.MotorControllerFactory;
+
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,6 +28,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    SparkMax motor1 = MotorControllerFactory.createSparkMax(21,MotorConfig.NEO);
+    motor1.set(0.25);
   }
 
   @Override
